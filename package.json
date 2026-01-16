@@ -1,0 +1,32 @@
+{
+  "name": "@chris.troutner/remote-admin",
+  "version": "1.0.0",
+  "description": "Remote administration app for Cash Box App Manager",
+  "keywords": [
+    "psf-pi-appliance-app"
+  ],
+  "main": "index.js",
+  "files": [
+    "dist",
+    "app.config.json",
+    "package.json"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "prepublishOnly": "npm run build"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-bootstrap": "2.9.1",
+    "bootstrap": "5.3.2"
+  },
+  "devDependencies": {
+    "vite": "5.0.0",
+    "@vitejs/plugin-react": "4.2.0"
+  }
+}
+
