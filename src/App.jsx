@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Container, Form, Alert, Spinner } from 'react-bootstrap'
+import NavigationBar from './components/NavigationBar'
 
 function App () {
   const [isEnabled, setIsEnabled] = useState(false)
@@ -56,7 +57,9 @@ function App () {
   }
 
   return (
-    <Container className="mt-4">
+    <div className='App'>
+      <NavigationBar />
+      <Container className="mt-4">
       <h1 className="mb-4">Remote Administration</h1>
       
       <p className="mb-4">
@@ -87,7 +90,8 @@ function App () {
           />
         </Form>
       )}
-    </Container>
+      </Container>
+    </div>
   )
 }
 
