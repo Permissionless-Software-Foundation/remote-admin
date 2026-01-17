@@ -1,11 +1,22 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { Container, Form, Alert, Spinner } from 'react-bootstrap'
 import NavigationBar from './components/NavigationBar'
+import ConfigAPI from './services/config-api'
 
 function App () {
   const [isEnabled, setIsEnabled] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+
+  // Initialize config API service once
+  // Use absolute URL for development, relative for production
+  const configAPI = useMemo(() => {
+    return new ConfigAPI(
+      import.meta.env.DEV
+        ? 'http://localhost:3633/api/config'
+        : '/api/config'
+    )
+  }, [])
 
   useEffect(() => {
     fetchRemoteAdminStatus()
@@ -15,16 +26,29 @@ function App () {
     try {
       setLoading(true)
       setError(null)
-      // TODO: Replace with actual API endpoint when backend is implemented
-      // const response = await fetch('/api/remote-admin/status')
-      // if (!response.ok) {
-      //   throw new Error('Failed to fetch remote admin status')
-      // }
-      // const data = await response.json()
-      // setIsEnabled(data.enabled)
+
+      const data = await configAPI.getConfig('remote-admin')
       
-      // Placeholder: Set default to false until API is implemented
-      setIsEnabled(false)
+      // Check if data is null (404), empty object, or has empty/missing value
+      let isEmpty = false
+      if (data === null) {
+        isEmpty = true
+      } else if (typeof data === 'object' && Object.keys(data).length === 0) {
+        isEmpty = true
+      } else if (!data.value) {
+        isEmpty = true
+      } else if (typeof data.value === 'object' && Object.keys(data.value).length === 0) {
+        isEmpty = true
+      }
+      
+      if (isEmpty) {
+        // Set enabled to false and save the config
+        setIsEnabled(false)
+        await configAPI.saveConfig('remote-admin', { enabled: false })
+      } else {
+        // Extract enabled value from config.value object
+        setIsEnabled(data.value?.enabled || false)
+      }
     } catch (err) {
       setError(err.message)
     } finally {
@@ -38,17 +62,7 @@ function App () {
 
     try {
       setError(null)
-      // TODO: Replace with actual API endpoint when backend is implemented
-      // const response = await fetch('/api/remote-admin/toggle', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json'
-      //   },
-      //   body: JSON.stringify({ enabled: newValue })
-      // })
-      // if (!response.ok) {
-      //   throw new Error('Failed to update remote admin status')
-      // }
+      await configAPI.saveConfig('remote-admin', { enabled: newValue })
     } catch (err) {
       setError(err.message)
       // Revert the toggle on error
