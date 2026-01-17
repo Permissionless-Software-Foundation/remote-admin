@@ -1,6 +1,6 @@
 {
   "name": "@chris.troutner/remote-admin-cashbox-ui",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Remote administration app for Cash Box App Manager",
   "keywords": [
     "psf-pi-appliance-app"
