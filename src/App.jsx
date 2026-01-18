@@ -9,13 +9,9 @@ function App () {
   const [error, setError] = useState(null)
 
   // Initialize config API service once
-  // Use absolute URL for development, relative for production
+  // Always use direct backend URL on port 3633
   const configAPI = useMemo(() => {
-    return new ConfigAPI(
-      import.meta.env.DEV
-        ? 'http://localhost:3633/api/config'
-        : '/api/config'
-    )
+    return new ConfigAPI('http://localhost:3633/api/config')
   }, [])
 
   useEffect(() => {
